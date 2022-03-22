@@ -13,6 +13,16 @@ router.get(
   controllers.consulterFinancementsfaitsParUnFinanceurSurUnProjet
 );
 
+router.get(
+  "/nombre/de/financements/faits/:idprojet/:idfinanceur",
+  controllers.consulterLeNombreDeFinancementsfaitsParUnFinanceurSurUnProjet
+);
+
+router.get(
+  "/nombre/de/financements/:idprojet",
+  controllers.consulterLeNombreDeFinancementsSurUnProjet
+);
+
 router.put("/:id", controllers.modifierUnFinancement);
 
 module.exports = router;

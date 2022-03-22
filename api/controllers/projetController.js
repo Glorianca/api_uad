@@ -15,6 +15,7 @@ exports.creerPojet = (req, res) => {
         // statut: req.body.statut,
         client: req.body.client,
         chef: req.body.chef,
+        commentaire: req.body.commentaire,
       });
       console.log(req.body);
       creer
@@ -29,74 +30,62 @@ exports.creerPojet = (req, res) => {
 };
 
 exports.consulterProjet = (req, res) => {
-  const statut = req.query.archivage;
-  if (req.query.archivage) {
-    Projet.find({
-      archive: statut,
-    })
-      .sort({
-        nom: 1,
-      })
-      .populate("client")
-      .exec()
-      .then((positif) => {
-        return res.status(200).json(positif);
-      })
-      .catch((negatif) => {
-        return res.status(500).json(negatif);
-      });
-  } else {
-    projet
-      .find({})
-      .sort({
-        nom: 1,
-      })
-      .populate("client")
-      .exec()
-      .then((positif) => {
-        return res.status(200).json(positif);
-      })
-      .catch((negatif) => {
-        return res.status(500).json(negatif);
-      });
-  }
-};
+  const query = {};
+  if (req.query.stat) query.statut = req.query.stat;
+  if (req.query.archivage) query.archive = req.query.archivage;
 
-exports.consulterProjetsEnCours = (req, res) => {
-  const savoir = req.query.stat;
-  if (req.query.stat) {
-    Projet.find({
-      statut: savoir,
+  Projet.find(query)
+    .sort({
+      nom: 1,
     })
-      .sort({
-        nom: 1,
-      })
-      .exec()
-      .then((positif) => {
-        return res.status(200).json(positif);
-      })
-      .catch((negatif) => {
-        return res.status(500).json(negatif);
-      });
-  } else {
-    Projet.find()
-      .sort({
-        nom: 1,
-      })
-      .exec()
-      .then((positif) => {
-        return res.status(200).json(positif);
-      })
-      .catch((negatif) => {
-        return res.status(500).json(negatif);
-      });
-  }
+    .populate("client chef")
+    .exec()
+    .then((positif) => {
+      return res.status(200).json(positif);
+    })
+    .catch((negatif) => {
+      return res.status(500).json(negatif);
+    });
 };
+//ce nesty plus important
+
+// exports.consulterProjetsEnCours = (req, res) => {
+//   const savoir = req.query.stat;
+//   if (req.query.stat) {
+//     Projet.find({
+//       statut: savoir,
+//     })
+//       .sort({
+//         nom: 1,
+//       })
+//       .exec()
+//       .then((positif) => {
+//         return res.status(200).json(positif);
+//       })
+//       .catch((negatif) => {
+//         return res.status(500).json(negatif);
+//       });
+//   } else {
+//     Projet.find()
+//       .sort({
+//         nom: 1,
+//       })
+//       .exec()
+//       .then((positif) => {
+//         return res.status(200).json(positif);
+//       })
+//       .catch((negatif) => {
+//         return res.status(500).json(negatif);
+//       });
+//   }
+// };
 
 exports.consulterProjetsDunClient = (req, res) => {
   const id = req.params.idClient;
+  const statut = req.query.archivage;
   Projet.find({
-    client: id,
+    // client: id,
+    $and: [{ client: id }, { archive: statut }],
   })
     // .select("chef nom but statut archive clien")
     .populate("client chef")
@@ -111,8 +100,9 @@ exports.consulterProjetsDunClient = (req, res) => {
 
 exports.consulterProjetsDunChef = (req, res) => {
   const id = req.params.idChef;
+  const statut = req.query.archivage;
   Projet.find({
-    chef: id,
+    $and: [{ chef: id }, { archive: statut }],
   })
     // .select("chef nom but statut archive clien")
     .populate("client chef")
@@ -131,8 +121,10 @@ exports.modifierProjet = (req, res) => {
 
   if (req.body.nom) modifier.nom = req.body.nom;
   if (req.body.but) modifier.but = req.body.but;
-  if (req.body.archive) modifier.archive = req.body.archive;
   if (req.body.statut) modifier.statut = req.body.statut;
+  if (req.body.commentaire) modifier.commentaire = req.body.commentaire;
+  if (req.body.client) modifier.client = req.body.client;
+  if (req.body.chef) modifier.chef = req.body.chef;
 
   Projet.updateOne({ _id: id }, { $set: modifier })
     .then((positif) => {

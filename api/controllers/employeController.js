@@ -16,11 +16,13 @@ exports.creerEmploye = (req, res) => {
         prenom: req.body.prenom,
         telephone: req.body.telephone,
         email: req.body.email,
-        grade: req.body.grade,
-        poste: req.body.poste,
-        aptitude: req.body.aptitude,
         sexe: req.body.sexe,
         dateNaissance: req.body.dateNaissance,
+        date_embauche: req.body.date_embauche,
+        pays: req.body.pays,
+        ville: req.body.ville,
+        quartier: req.body.quartier,
+        salaire: req.body.salaire,
       });
 
       creer
@@ -43,7 +45,6 @@ exports.consulterTousLesEmployes = (req, res) => {
       .sort({
         nom: 1,
       })
-      .select("nom prenom email telephone poste grade aptitude sexe")
       .exec()
       .then((positif) => {
         return res.status(200).json(positif);
@@ -67,28 +68,62 @@ exports.consulterTousLesEmployes = (req, res) => {
 };
 
 exports.rechercherEmployes = (req, res) => {
+  const statut = req.query.archivage;
   const id = req.params.id;
-  Employe.findById(id)
-    .exec()
-    .then((positif) => {
-      return res.status(201).json(positif);
+  if (req.query.archivage) {
+    Employe.find({
+      $and: [{ _id: id }, { archive: statut }], //  $and: [{archive: false}, {archive: false}]
     })
-    .catch((negatif) => {
-      return res.status(500).json(negatif);
-    });
+      .exec()
+      .then((positif) => {
+        return res.status(201).json(positif);
+      })
+      .catch((negatif) => {
+        return res.status(500).json(negatif);
+      });
+  } else {
+    Employe.find()
+      .sort({
+        nom: 1,
+      })
+      .exec()
+      .then((positif) => {
+        return res.status(200).json(positif);
+      })
+      .catch((negatif) => {
+        return res.status(500).json(negatif);
+      });
+  }
 };
 
 exports.rechercherEmployeparNom = (req, res) => {
-  Employe.find({
-    nom: req.body.nom,
-  })
-    .exec()
-    .then((positif) => {
-      return res.status(201).json(positif);
+  const statut = req.query.archivage;
+  if (req.query.archivage) {
+    Employe.find({
+      $and: [{ nom: req.params.nom }, { archive: statut }],
     })
-    .catch((negatif) => {
-      return res.status(500).json(negatif);
-    });
+      .exec()
+      .then((positif) => {
+        return res.status(200).json(positif);
+      })
+
+      .catch((negatif) => {
+        return res.status(500).json(negatif);
+      });
+  } else {
+    Client.find()
+      .sort({
+        nom: 1,
+      })
+      .populate()
+      .exec()
+      .then((positif) => {
+        return res.status(200).json(positif);
+      })
+      .catch((negatif) => {
+        return res.status(500).json(negatif);
+      });
+  }
 };
 
 exports.modifierEmploye = (req, res) => {
@@ -99,11 +134,13 @@ exports.modifierEmploye = (req, res) => {
   if (req.body.prenom) modifier.prenom = req.body.prenom;
   if (req.body.telephone) modifier.telephone = req.body.telephone;
   if (req.body.email) modifier.email = req.body.email;
-  if (req.body.grade) modifier.grade = req.body.grade;
-  if (req.body.poste) modifier.poste = req.body.poste;
+  if (req.body.pays) modifier.pays = req.body.pays;
+  if (req.body.ville) modifier.ville = req.body.ville;
+  if (req.body.quartier) modifier.quartier = req.body.quartier;
   if (req.body.sexe) modifier.sexe = req.body.sexe;
   if (req.body.dateNaissance) modifier.dateNaissance = req.body.dateNaissance;
-  if (req.body.archive) modifier.archive = req.body.archive;
+  if (req.body.salaire) modifier.salaire = req.body.salaire;
+  if (req.body.commentaire) modifier.commentaire = req.body.commentaire;
 
   Employe.updateOne({ _id: id }, { $set: modifier })
     .then((positif) => {

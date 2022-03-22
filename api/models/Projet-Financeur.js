@@ -12,32 +12,23 @@ const financeur_projetSchema = new mongoose.Schema(
       ref: "projet",
       required: true,
     },
-
-    //enlever  le type de financement
-    type: {
-      type: String,
-      //required: true,
-    },
     statut: {
       type: String,
       enum: ["encours", "terminé", "suspendu"],
       default: "encours",
     },
+    archive: {
+      type: String,
+      enum: ["archive", "nonArchive"],
+      default: "nonArchive",
+    },
     montant: {
       type: Number,
       // required: true,
     },
-    date_contrat: {
+    date_financement: {
       type: Date,
-      //required: true,
-    },
-    date_debut: {
-      type: Date,
-      //required: true,
-    },
-    date_fin: {
-      type: Date,
-      required: false,
+      required: true,
     },
     periodicite: {
       type: String,
@@ -54,6 +45,11 @@ const financeur_projetSchema = new mongoose.Schema(
     montant_total: {
       type: Number,
       required: false,
+    },
+    type: {
+      type: String,
+      required: true,
+      enum: ["don", "investissement"],
     },
   },
   { timestamps: true }

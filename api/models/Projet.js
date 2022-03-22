@@ -30,6 +30,10 @@ const projetSchema = new mongoose.Schema(
       enum: ["archive", "nonArchive"],
       default: "nonArchive",
     },
+    commentaire: {
+      type: String,
+      required: false,
+    },
   },
   { timestamps: true }
 );

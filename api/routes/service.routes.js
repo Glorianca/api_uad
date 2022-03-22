@@ -6,7 +6,7 @@ router.post("/", controllers.creerService);
 
 router.get("/", controllers.consulterTousLesServices);
 //router.get("/plusieurs", controllers.consulterTousLesServices)  cette route ne peut etre executer que si elle passe avant celle du bas
-router.get("/recherche", controllers.rechercherUnServiceParSonNom);
+router.get("/recherche/", controllers.rechercherUnServiceParSonNom);
 
 router.get("/:id", controllers.recupererUnService);
 

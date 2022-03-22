@@ -24,30 +24,85 @@ exports.creerService = (req, res) => {
     });
 };
 
+exports.consulterTousLesServices = (req, res) => {
+  const status = req.query.archivage;
+  if (req.query.archivage) {
+    Service.find({
+      archive: status, //$and: [{archive: false}, {archive: false}] lorsquon veut mettre des contraintes
+    })
+      .sort({
+        nom: 1,
+      })
+      .exec()
+      .then((positif) => {
+        return res.status(200).json(positif);
+      })
+      .catch((negatif) => {
+        return res.status(500).json(negatif);
+      });
+  } else {
+    Service.find()
+      .sort({
+        nom: 1,
+      })
+      .populate()
+      .exec()
+      .then((positif) => {
+        return res.status(200).json(positif);
+      })
+      .catch((negatif) => {
+        return res.status(500).json(negatif);
+      });
+  }
+};
+
 exports.recupererUnService = (req, res) => {
   const id = req.params.id;
-  Service.findById(id)
-    .exec()
-    .then((positif) => {
-      return res.status(200).json(positif);
-    })
-    .catch((negatif) => {
-      return res.status(500).json(negatif);
-    });
+  const statut = req.query.archivage;
+  if (req.query.archivage) {
+    Service.find({ $and: [{ _id: id }, { archive: statut }] })
+      .exec()
+      .then((positif) => {
+        return res.status(200).json(positif);
+      })
+      .catch((negatif) => {
+        return res.status(500).json(negatif);
+      });
+  } else {
+    Service.find()
+      .exec()
+      .then((positif) => {
+        return res.status(200).json(positif);
+      })
+      .catch((negatif) => {
+        return res.status(500).json(negatif);
+      });
+  }
 };
 
 exports.rechercherUnServiceParSonNom = (req, res) => {
-  Service.find({
-    nom: req.body.nom,
-  })
-    .exec()
-    .then((positif) => {
-      return res.status(200).json(positif);
-    })
-    .catch((negatif) => {
-      console.log(negatif);
-      return res.status(500).json(negatif);
-    });
+  const nom = req.body.nom;
+  const statut = req.query.archivage;
+  if (req.query.archivage) {
+    Service.find({ $and: [{ nom: nom }, { archive: statut }] })
+      .exec()
+      .then((positif) => {
+        return res.status(200).json(positif);
+      })
+      .catch((negatif) => {
+        console.log(negatif);
+        return res.status(500).json(negatif);
+      });
+  } else {
+    Service.find()
+      .exec()
+      .then((positif) => {
+        return res.status(200).json(positif);
+      })
+      .catch((negatif) => {
+        return res.status(500).json(negatif);
+      });
+  }
 };
 
 exports.modifierService = (req, res) => {
@@ -56,7 +111,6 @@ exports.modifierService = (req, res) => {
 
   if (req.body.nom) modifier.nom = req.body.nom;
   if (req.body.description) modifier.description = req.body.description;
-  if (req.body.archive) modifier.archive = req.body.archive;
 
   Service.updateOne({ _id: id }, { $set: modifier })
     .then((positif) => {
@@ -79,37 +133,4 @@ exports.archiverService = (req, res) => {
     .catch((negatif) => {
       return res.status(500).json(negatif);
     });
-};
-
-exports.consulterTousLesServices = (req, res) => {
-  const status = req.query.archivage;
-  if (req.query.archivage) {
-    Service.find({
-      archive: status, //$and: [{archive: false}, {archive: false}] lorsquon veut mettre des contraintes
-    })
-      .sort({
-        nom: 1,
-      })
-      .populate()
-      .exec()
-      .then((positif) => {
-        return res.status(200).json(positif);
-      })
-      .catch((negatif) => {
-        return res.status(500).json(negatif);
-      });
-  } else {
-    Service.find()
-      .sort({
-        nom: 1,
-      })
-      .populate()
-      .exec()
-      .then((positif) => {
-        return res.status(200).json(positif);
-      })
-      .catch((negatif) => {
-        return res.status(500).json(negatif);
-      });
-  }
 };

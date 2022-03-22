@@ -12,15 +12,22 @@ const financeurSchema = new mongoose.Schema(
       required: false,
       maxlength: 60,
     },
+    sexe: {
+      type: String,
+      enum: ["Mascculin", "Feminin", "Autre"],
+    },
     email: {
       type: String,
       required: true,
       unique: true,
     },
-    statut: {
-      type: String,
-      enum: ["encours", "terminé", "suspendu"],
-      default: "encours",
+    date_naissance: {
+      rype: Date,
+      required: false,
+    },
+    date_partenariat: {
+      type: Date,
+      required: true,
     },
     telephone: {
       type: String,
@@ -32,11 +39,6 @@ const financeurSchema = new mongoose.Schema(
       type: String,
       required: true,
       enum: ["personne morale", "personne physique"],
-    },
-    qualite: {
-      type: String,
-      required: true,
-      enum: ["donnateur", "investisseur"],
     },
     commentaire: {
       type: String,
@@ -60,6 +62,10 @@ const financeurSchema = new mongoose.Schema(
       type: String,
       enum: ["archive", "nonArchive"],
       default: "nonArchive",
+    },
+    secteur_activite: {
+      type: String,
+      required: false,
     },
   },
   { timestamps: true }

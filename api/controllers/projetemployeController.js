@@ -1,6 +1,7 @@
 const models = require("../models");
 const Projet = require("../models/Projet");
 const ProjetEmploye = models.projetEmploye;
+const Employe = models.employe;
 
 exports.AffecterEmployeSurProjet = (req, res) => {
   const creer = new ProjetEmploye({
@@ -67,7 +68,34 @@ exports.consulterProjetsSurlesquelsUnEmployeEstChef = (req, res) => {
     });
 };
 
-exports.consulterEmployesDisponibles = (req, res) => {};
+exports.consulterEmployesDisponibles = (req, res) => {
+  Employe.find({
+    archive: status,
+  })
+    .sort({
+      nom: 1,
+    })
+    .exec()
+    .then((positif1) => {
+      return res.status(200).json(positif1);
+    })
+    .then((negatif1) => {
+      return res.status(500).json(negatif1);
+    });
+
+  ProjetEmploye.find({
+    projet: req.params.id,
+  })
+    .select("mission")
+    .populate("projet employe")
+    .exec()
+    .then((positif2) => {
+      return res.status(200).json(positif2);
+    })
+    .catch((negatif2) => {
+      return res.status(500).json(negatif2);
+    });
+};
 
 exports.consulterEmployesOuChef = (req, res) => {
   const id = req.params.idchef;

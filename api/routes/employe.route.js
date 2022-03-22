@@ -8,7 +8,7 @@ router.get("/", controllers.consulterTousLesEmployes);
 
 router.get("/rechercheId/:id", controllers.rechercherEmployes);
 
-router.get("/recherche/", controllers.rechercherEmployeparNom);
+router.get("/recherche/nom/:nom", controllers.rechercherEmployeparNom);
 
 router.put("/:id", controllers.modifierEmploye);
 

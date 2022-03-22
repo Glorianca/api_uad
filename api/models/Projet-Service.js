@@ -16,7 +16,11 @@ const projet_serviceSchema = new mongoose.Schema(
       type: Number,
       required: false,
     },
-    poucentage_reglement_facture_totale: {
+    // poucentage_reglement_facture_totale: {
+    //   type: Number,
+    //   required: false,
+    // },
+    reste_a_verser: {
       type: Number,
       required: false,
     },

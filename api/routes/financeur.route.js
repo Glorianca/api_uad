@@ -6,7 +6,7 @@ router.post("/", controllers.creerFinanceur);
 
 router.get("/", controllers.consulterTousLesFinanceurs);
 
-router.get("/nom/", controllers.rechercherUnFinanceurParNom);
+router.get("/nom/:nom", controllers.rechercherUnFinanceurParNom);
 
 router.get("/:id", controllers.rechercherUnFinanceurParId);
 

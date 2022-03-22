@@ -33,22 +33,22 @@ const employeSchema = new mongoose.Schema(
       default: "Masculin",
     },
 
-    grade: {
-      type: String,
-      required: false,
+    date_embauche: {
+      type: Date,
+      required: true,
     },
-
-    poste: {
+    pays: {
       type: String,
       required: true,
     },
-
-    aptitude: [
-      {
-        type: String,
-        required: false,
-      },
-    ],
+    ville: {
+      type: String,
+      required: true,
+    },
+    quartier: {
+      type: String,
+      required: true,
+    },
 
     dateNaissance: {
       type: Date,
@@ -58,6 +58,14 @@ const employeSchema = new mongoose.Schema(
       type: String,
       enum: ["archive", "nonArchive"],
       default: "nonArchive",
+    },
+    commentaire: {
+      type: String,
+      required: false,
+    },
+    salaire: {
+      type: Number,
+      required: true,
     },
   },
   { timestamps: true }

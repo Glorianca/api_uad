@@ -37,7 +37,26 @@ exports.consulterFinancementsSurUnProjet = (req, res) => {
     .exec()
     .then((positif) => {
       console.log(positif);
+
       return res.status(200).json(positif);
+    })
+    .catch((negatif) => {
+      return res.status(500).json(negatif);
+    });
+};
+
+exports.consulterLeNombreDeFinancementsSurUnProjet = (req, res) => {
+  const id = req.params.idprojet;
+  const nombre = 0;
+  ProjetFinanceur.find({
+    projet: id,
+  })
+    .populate("projet financeur")
+    .exec()
+    .then((positif) => {
+      console.log(positif);
+
+      return res.status(200).json({ taille: positif.length });
     })
     .catch((negatif) => {
       return res.status(500).json(negatif);
@@ -72,6 +91,27 @@ exports.consulterFinancementsfaitsParUnFinanceurSurUnProjet = (req, res) => {
     .exec()
     .then((positif) => {
       return res.status(200).json(positif);
+    })
+    .catch((negatif) => {
+      return res.status(500).json(negatif);
+    });
+};
+
+exports.consulterLeNombreDeFinancementsfaitsParUnFinanceurSurUnProjet = (
+  req,
+  res
+) => {
+  const idp = req.params.idprojet;
+  const idf = req.params.idfinanceur;
+
+  ProjetFinanceur.find({
+    financeur: idf,
+    projet: idp,
+  })
+    .populate("financeur projet")
+    .exec()
+    .then((positif) => {
+      return res.status(200).json({ taille: positif.length });
     })
     .catch((negatif) => {
       return res.status(500).json(negatif);

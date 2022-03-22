@@ -1,5 +1,4 @@
 const models = require("../models/index");
-const Service = require("../models/Service");
 const Financeur = models.financeur;
 
 exports.creerFinanceur = (req, res) => {
@@ -12,14 +11,17 @@ exports.creerFinanceur = (req, res) => {
       const creer = new Financeur({
         nom: req.body.nom,
         prenom: req.body.prenom,
+        sexe: req.body.sexe,
         email: req.body.email,
         telephone: req.body.telephone,
         type: req.body.type,
-        qualite: req.body.qualite,
         pays: req.body.pays,
         ville: req.body.ville,
         quartier: req.body.quartier,
+        date_naissance: req.body.date_naissance,
+        date_partenariat: req.body.date_partenariat,
         commentaire: req.body.commentaire,
+        secteur_activite: req.body.secteur_activite,
       });
       creer
         .save()
@@ -65,8 +67,9 @@ exports.consulterTousLesFinanceurs = (req, res) => {
 };
 
 exports.rechercherUnFinanceurParNom = (req, res) => {
+  const nom = req.params.nom;
   Financeur.find({
-    nom: req.body.nom,
+    nom: nom,
   })
     .exec()
     .then((positif) => {
@@ -79,14 +82,33 @@ exports.rechercherUnFinanceurParNom = (req, res) => {
 
 exports.rechercherUnFinanceurParId = (req, res) => {
   const id = req.params.id;
-  Financeur.findById(id)
-    .exec()
-    .then((positif) => {
-      return res.status(201).json(positif);
+  const statut = req.query.archivage;
+
+  if (statut) {
+    Financeur.find({
+      $and: [{ _id: id }, { archive: statut }],
     })
-    .catch((negatif) => {
-      return res.status(500).json(negatif);
-    });
+      .exec()
+      .then((positif) => {
+        return res.status(201).json(positif);
+      })
+      .catch((negatif) => {
+        return res.status(500).json(negatif);
+      });
+  } else {
+    Financeur.find()
+      .sort({
+        nom: 1,
+      })
+      .populate()
+      .exec()
+      .then((positif) => {
+        return res.status(200).json(positif);
+      })
+      .catch((negatif) => {
+        return res.status(500).json(negatif);
+      });
+  }
 };
 exports.modifierFinanceur = (req, res) => {
   const modifier = {};
